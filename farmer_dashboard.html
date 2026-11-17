@@ -1,0 +1,214 @@
+
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page farmer-dashboard">
+
+    <!-- Dashboard Welcome -->
+    <div class="dashboard-heading farmer-welcome">
+        <div>
+            <span class="section-label">FARMER WORKSPACE</span>
+            <h1>Welcome to Your Dashboard</h1>
+            <p>Manage your farm products, monitor stock and track customer orders.</p>
+        </div>
+
+        <a href="{{ url_for('add_product') }}" class="auth-submit-btn">
+            + Add New Product
+        </a>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats admin-stats farmer-stats">
+
+        <div class="stat-card">
+            <span class="stat-icon">🌾</span>
+            <b>{{ products|length }}</b>
+            <span>Total Products</span>
+            <small>Products in your inventory</small>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📦</span>
+            <b>{{ products|sum(attribute='quantity') }}</b>
+            <span>Available Stock</span>
+            <small>Total units available</small>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🛒</span>
+            <b>{{ orders|length }}</b>
+            <span>Customer Orders</span>
+            <small>Orders received for your products</small>
+        </div>
+
+    </div>
+
+    <!-- Product Inventory -->
+    <section class="dashboard-section farmer-panel">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">INVENTORY MANAGEMENT</span>
+                <h2>My Products</h2>
+                <p>View and manage your listed farm products.</p>
+            </div>
+
+            <span class="section-count">{{ products|length }} Products</span>
+        </div>
+
+        {% if products %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Available Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>
+                            <strong>{{ p.product_name }}</strong>
+                        </td>
+
+                        <td>{{ p.category }}</td>
+
+                        <td>
+                            <strong>₹{{ "%.2f"|format(p.price|float) }}</strong>
+                        </td>
+
+                        <td>
+                            {% if p.quantity > 0 %}
+                                <span class="stock-good">
+                                    {{ p.quantity }} Units
+                                </span>
+                            {% else %}
+                                <span class="stock-empty">Out of Stock</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="actions">
+                            <a href="{{ url_for('edit_product', pid=p.product_id) }}">
+                                Edit
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{{ url_for('delete_product', pid=p.product_id) }}"
+                                data-confirm="Are you sure you want to remove this product?"
+                            >
+                                <button type="submit" class="danger-link">
+                                    Remove
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-cart-icon">🌱</div>
+            <h2>Your Inventory is Empty</h2>
+            <p>Add your first farm product to start selling on Farm2Home.</p>
+            <a href="{{ url_for('add_product') }}" class="auth-submit-btn">
+                + Add Your First Product
+            </a>
+        </div>
+        {% endif %}
+
+    </section>
+
+    <!-- Customer Orders -->
+    <section class="dashboard-section farmer-panel">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">SALES & DELIVERIES</span>
+                <h2>Customer Orders</h2>
+                <p>Track customer purchases and update order progress.</p>
+            </div>
+
+            <span class="section-count">{{ orders|length }} Orders</span>
+        </div>
+
+        {% if orders %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Order Date</th>
+                        <th>Order Amount</th>
+                        <th>Current Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <td><strong>#{{ o.order_id }}</strong></td>
+
+                        <td>{{ o.customer_name }}</td>
+
+                        <td>{{ o.order_date }}</td>
+
+                        <td>
+                            <strong>₹{{ "%.2f"|format(o.total_amount|float) }}</strong>
+                        </td>
+
+                        <td>
+                            <span class="status-badge">{{ o.status }}</span>
+                        </td>
+
+                        <td>
+                            <form
+                                class="inline-form"
+                                method="post"
+                                action="{{ url_for('update_order_status', oid=o.order_id) }}"
+                            >
+                                <select name="status" required>
+                                    {% for s in ['Placed', 'Accepted', 'Processing', 'Out for Delivery', 'Delivered', 'Cancelled'] %}
+                                    <option value="{{ s }}"
+                                        {% if s == o.status %}selected{% endif %}>
+                                        {{ s }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <button type="submit" class="small-btn">
+                                    Save
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-cart-icon">📋</div>
+            <h2>No Orders Yet</h2>
+            <p>Customer orders for your products will appear here.</p>
+        </div>
+        {% endif %}
+
+    </section>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="dashboard-heading">
+        <div>
+            <span class="section-label">YOUR SELECTION</span>
+            <h1>Shopping Cart</h1>
+            <p>Review your products before placing your order.</p>
+        </div>
+
+        <div class="dashboard-icon">🛒</div>
+    </div>
+
+
+    {% if items %}
+
+    <!-- Cart Items -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">YOUR PRODUCTS</span>
+                <h2>Cart Items</h2>
+            </div>
+
+            <span class="section-count">
+                {{ items|length }} Items
+            </span>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for i in items %}
+                    <tr>
+
+                        <td>
+                            <strong>{{ i.product_name }}</strong>
+                        </td>
+
+                        <td>₹{{ i.price }}</td>
+
+                        <td>
+                            <form
+                                class="inline-form"
+                                method="post"
+                                action="{{ url_for('update_cart', pid=i.product_id) }}"
+                            >
+                                <input
+                                    class="qty"
+                                    type="number"
+                                    name="quantity"
+                                    min="0"
+                                    max="{{ i.stock }}"
+                                    value="{{ i.quantity }}"
+                                    required
+                                >
+
+                                <button type="submit" class="small-btn">
+                                    Update
+                                </button>
+                            </form>
+
+                            <small class="muted">
+                                Maximum: {{ i.stock }}
+                            </small>
+                        </td>
+
+                        <td>
+                            <strong>₹{{ i.line_total }}</strong>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="cart-continue">
+            <a href="{{ url_for('index') }}">
+                ← Continue Shopping
+            </a>
+        </div>
+
+    </section>
+
+
+    <!-- Checkout Section -->
+    <section class="checkout panel">
+
+        <div class="checkout-heading">
+            <span class="section-label">ORDER SUMMARY</span>
+            <h2>Complete Your Order</h2>
+        </div>
+
+        <div class="cart-total">
+            <span>Total Amount</span>
+            <strong>₹{{ total }}</strong>
+        </div>
+
+        <form
+            method="post"
+            action="{{ url_for('checkout') }}"
+            class="form"
+        >
+
+            <label for="delivery-address">
+                Delivery Address
+            </label>
+
+            <textarea
+                id="delivery-address"
+                name="address"
+                rows="3"
+                placeholder="Enter your complete delivery address"
+                required
+            ></textarea>
+
+            <label for="payment-mode">
+                Payment Method
+            </label>
+
+            <select id="payment-mode" name="payment_mode" required>
+                <option value="Cash on Delivery">
+                    Cash on Delivery
+                </option>
+
+                <option value="UPI (record only)">
+                    UPI (Record Only)
+                </option>
+            </select>
+
+            <button type="submit" class="auth-submit-btn">
+                Place Order <span>→</span>
+            </button>
+
+        </form>
+
+        <p class="auth-security">
+            🌱 Thank you for supporting local farmers.
+        </p>
+
+    </section>
+
+
+    {% else %}
+
+    <!-- Empty Cart -->
+    <div class="empty-state">
+
+        <div class="empty-cart-icon">🛒</div>
+
+        <h2>Your Cart is Empty</h2>
+
+        <p>
+            You haven't added any products to your cart yet.
+            Explore fresh products from local farmers.
+        </p>
+
+        <a href="{{ url_for('index') }}" class="auth-submit-btn">
+            Explore Products →
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

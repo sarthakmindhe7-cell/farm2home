@@ -1,0 +1,150 @@
+
+{% extends "base.html" %}
+
+{% block title %}Create Account | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <!-- Left Side Information -->
+    <div class="auth-visual">
+        <div class="auth-visual-content">
+
+            <span class="auth-label">JOIN THE FARM2HOME COMMUNITY</span>
+
+            <h1>
+                Grow together.
+                <span>Shop fresher.</span>
+            </h1>
+
+            <p>
+                Be part of a smarter agricultural marketplace.
+                Connect directly with farmers and customers.
+            </p>
+
+            <div class="auth-benefits">
+                <div><span>🌱</span> Support local farmers</div>
+                <div><span>🥬</span> Discover fresh products</div>
+                <div><span>🤝</span> Build direct connections</div>
+            </div>
+
+        </div>
+
+        <div class="auth-decoration">🌾 🥕 🍅</div>
+    </div>
+
+
+    <!-- Registration Form -->
+    <div class="auth-form-area">
+
+        <div class="auth-card">
+
+            <div class="auth-card-icon">🌿</div>
+
+            <span class="section-label">GET STARTED</span>
+
+            <h2>Create your account</h2>
+
+            <p class="auth-subtitle">
+                Fill in your details to join Farm2Home.
+            </p>
+
+            <form class="auth-form" method="post">
+
+                <label for="register-name">Full Name</label>
+                <input
+                    type="text"
+                    id="register-name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    maxlength="80"
+                    required
+                >
+
+                <label for="register-email">Email Address</label>
+                <input
+                    type="email"
+                    id="register-email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    maxlength="100"
+                    required
+                >
+
+                <label for="register-phone">Mobile Number</label>
+                <input
+                    type="tel"
+                    id="register-phone"
+                    name="phone"
+                    placeholder="Enter your mobile number"
+                    autocomplete="tel"
+                    maxlength="15"
+                >
+
+                <label for="register-address">Address</label>
+                <textarea
+                    id="register-address"
+                    name="address"
+                    placeholder="Enter your full address"
+                    rows="3"
+                    maxlength="255"
+                ></textarea>
+
+                <label for="register-password">Password</label>
+
+                <div class="password-field">
+                    <input
+                        type="password"
+                        id="register-password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password-toggle="register-password"
+                        aria-label="Show password"
+                    >
+                        Show
+                    </button>
+                </div>
+
+                <label for="register-role">Register As</label>
+
+                <select id="register-role" name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="farmer">Farmer</option>
+                </select>
+
+                <button type="submit" class="auth-submit-btn">
+                    Create Account <span>→</span>
+                </button>
+
+            </form>
+
+            <div class="auth-divider">
+                <span>ALREADY A MEMBER?</span>
+            </div>
+
+            <a href="{{ url_for('login') }}" class="auth-register-btn">
+                Login to Your Account
+            </a>
+
+            <p class="auth-security">
+                Create your Farm2Home account to get started.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

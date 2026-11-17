@@ -1,0 +1,254 @@
+
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <!-- Dashboard Heading -->
+    <div class="dashboard-heading">
+        <div>
+            <span class="section-label">ADMINISTRATION</span>
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, products and customer orders.</p>
+        </div>
+
+        <div class="dashboard-icon">🛡️</div>
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="stats admin-stats">
+
+        <div class="stat-card">
+            <span class="stat-icon">👥</span>
+            <b>{{ users|length }}</b>
+            <span>Total Users</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🌾</span>
+            <b>{{ products|length }}</b>
+            <span>Total Products</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">📦</span>
+            <b>{{ orders|length }}</b>
+            <span>Total Orders</span>
+        </div>
+
+    </div>
+
+
+    <!-- User Management -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">ACCOUNT MANAGEMENT</span>
+                <h2>Registered Users</h2>
+            </div>
+            <span class="section-count">{{ users|length }} Users</span>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Current Role</th>
+                        <th>Manage Role</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td><strong>{{ u.name }}</strong></td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.phone or 'Not provided' }}</td>
+
+                        <td>
+                            <span class="role-badge {{ u.role }}">
+                                {{ u.role|capitalize }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if u.user_id != session.get('user_id') %}
+
+                            <form
+                                class="inline-form"
+                                method="post"
+                                action="{{ url_for('change_role', uid=u.user_id) }}"
+                            >
+                                <select name="role" required>
+                                    {% for r in ['farmer', 'customer', 'admin'] %}
+                                    <option value="{{ r }}"
+                                        {% if r == u.role %}selected{% endif %}>
+                                        {{ r|capitalize }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <button type="submit" class="small-btn">
+                                    Save
+                                </button>
+                            </form>
+
+                            {% else %}
+                                <span class="muted">Current account</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-table">
+                            No users registered yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- Product Management -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">MARKETPLACE</span>
+                <h2>All Products</h2>
+            </div>
+            <span class="section-count">{{ products|length }} Products</span>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Farmer</th>
+                        <th>Price</th>
+                        <th>Available Stock</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td><strong>{{ p.product_name }}</strong></td>
+                        <td>{{ p.farmer_name }}</td>
+                        <td>₹{{ p.price }}</td>
+                        <td>
+                            {% if p.quantity > 0 %}
+                                <span class="stock-good">{{ p.quantity }}</span>
+                            {% else %}
+                                <span class="stock-empty">Out of Stock</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="empty-table">
+                            No products available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- Order Management -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">ORDER MANAGEMENT</span>
+                <h2>Customer Orders</h2>
+            </div>
+            <span class="section-count">{{ orders|length }} Orders</span>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Total Amount</th>
+                        <th>Current Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <td><strong>#{{ o.order_id }}</strong></td>
+                        <td>{{ o.customer_name }}</td>
+                        <td>₹{{ o.total_amount }}</td>
+
+                        <td>
+                            <span class="status-badge">
+                                {{ o.status }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <form
+                                class="inline-form"
+                                method="post"
+                                action="{{ url_for('update_order_status', oid=o.order_id) }}"
+                            >
+                                <select name="status" required>
+                                    {% for s in ['Placed', 'Accepted', 'Processing', 'Out for Delivery', 'Delivered', 'Cancelled'] %}
+                                    <option value="{{ s }}"
+                                        {% if s == o.status %}selected{% endif %}>
+                                        {{ s }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <button type="submit" class="small-btn">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-table">
+                            No orders received yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+</section>
+
+{% endblock %}

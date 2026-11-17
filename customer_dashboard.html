@@ -1,0 +1,136 @@
+
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page customer-dashboard">
+
+    <!-- Welcome Header -->
+    <div class="dashboard-heading">
+        <div>
+            <span class="section-label">CUSTOMER WORKSPACE</span>
+            <h1>My Dashboard</h1>
+            <p>Welcome back! Track your purchases and manage your orders.</p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="auth-submit-btn">
+            + Explore Products
+        </a>
+    </div>
+
+    <!-- Dashboard Statistics -->
+    <div class="stats admin-stats">
+
+        <div class="stat-card">
+            <span class="stat-icon">🛍️</span>
+            <b>{{ orders|length }}</b>
+            <span>Total Orders</span>
+            <small>Your complete purchase history</small>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">💰</span>
+            <b>₹{{ "%.2f"|format(orders|sum(attribute='total_amount')|float) }}</b>
+            <span>Total Purchase Amount</span>
+            <small>Value of all your orders</small>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">🚚</span>
+            <b>{{ orders|selectattr('status', 'equalto', 'Out for Delivery')|list|length }}</b>
+            <span>Out for Delivery</span>
+            <small>Orders on the way</small>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-icon">✅</span>
+            <b>{{ orders|selectattr('status', 'equalto', 'Delivered')|list|length }}</b>
+            <span>Delivered Orders</span>
+            <small>Successfully completed</small>
+        </div>
+
+    </div>
+
+    <!-- Order History -->
+    <section class="dashboard-section customer-panel">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">YOUR PURCHASES</span>
+                <h2>Order History</h2>
+                <p>View your order details and delivery progress.</p>
+            </div>
+
+            <span class="section-count">
+                {{ orders|length }} Orders
+            </span>
+        </div>
+
+        {% if orders %}
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Delivery Address</th>
+                        <th>Order Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+
+                        <td>
+                            <strong>#{{ o.order_id }}</strong>
+                        </td>
+
+                        <td>{{ o.order_date }}</td>
+
+                        <td>
+                            <strong>₹{{ "%.2f"|format(o.total_amount|float) }}</strong>
+                        </td>
+
+                        <td>{{ o.delivery_address }}</td>
+
+                        <td>
+                            <span class="status-badge">
+                                {{ o.status }}
+                            </span>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <div class="empty-cart-icon">🛍️</div>
+
+            <h2>No Orders Yet</h2>
+
+            <p>
+                You haven't placed any orders yet.
+                Discover fresh products directly from local farmers.
+            </p>
+
+            <a href="{{ url_for('index') }}" class="auth-submit-btn">
+                Browse Fresh Products →
+            </a>
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</section>
+
+{% endblock %}

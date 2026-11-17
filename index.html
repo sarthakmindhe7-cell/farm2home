@@ -1,0 +1,388 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    Farm2Home | Fresh from Farms to Your Home
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+<section class="home-hero">
+
+    <div class="home-hero-content">
+
+        <span class="hero-label">
+            🌱 FRESH • LOCAL • FARM DIRECT
+        </span>
+
+        <h1>
+            From the farmer's field
+            <span>to your family table.</span>
+        </h1>
+
+        <p class="hero-description">
+            Shop fresh fruits and vegetables directly from local farmers.
+            Enjoy farm-fresh quality, fair prices and a better way to shop.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#marketplace" class="hero-primary-btn">
+                Explore Products <span>→</span>
+            </a>
+
+            {% if not current_user %}
+                <a href="{{ url_for('register') }}" class="hero-secondary-btn">
+                    Join Farm2Home
+                </a>
+            {% elif role == 'farmer' %}
+                <a href="{{ url_for('add_product') }}" class="hero-secondary-btn">
+                    Sell Your Products
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="hero-trust">
+            <div>
+                <strong>🌿</strong>
+                <span>Fresh Produce</span>
+            </div>
+
+            <div>
+                <strong>🤝</strong>
+                <span>Direct from Farmers</span>
+            </div>
+
+            <div>
+                <strong>🏡</strong>
+                <span>Delivered to You</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="home-hero-visual">
+        <div class="hero-image-circle">
+            <span class="hero-main-emoji">🥬</span>
+            <span class="hero-floating fruit-one">🍅</span>
+            <span class="hero-floating fruit-two">🥕</span>
+            <span class="hero-floating fruit-three">🍎</span>
+            <span class="hero-floating fruit-four">🥦</span>
+        </div>
+
+        <div class="hero-fresh-card">
+            <span>🌱</span>
+            <div>
+                <strong>Farm Fresh</strong>
+                <small>Goodness in every bite</small>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- ================= MARKETPLACE HIGHLIGHTS ================= -->
+<section class="market-highlights">
+
+    <div class="highlight-item">
+        <span class="highlight-icon">🌾</span>
+        <div>
+            <strong>Farmer Direct</strong>
+            <small>Buy straight from growers</small>
+        </div>
+    </div>
+
+    <div class="highlight-item">
+        <span class="highlight-icon">🥗</span>
+        <div>
+            <strong>Fresh Selection</strong>
+            <small>Quality fruits and vegetables</small>
+        </div>
+    </div>
+
+    <div class="highlight-item">
+        <span class="highlight-icon">💚</span>
+        <div>
+            <strong>Support Local</strong>
+            <small>Empowering farming communities</small>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- ================= PRODUCT MARKETPLACE ================= -->
+<section class="marketplace-section" id="marketplace">
+
+    <div class="marketplace-heading">
+
+        <div>
+            <span class="section-label">OUR FARM MARKETPLACE</span>
+
+            <h2>
+                Fresh picks for you
+            </h2>
+
+            <p>
+                Discover fresh produce listed by farmers.
+                Choose your favourites and order with ease.
+            </p>
+        </div>
+
+        <div class="product-count">
+            <strong>{{ products|length }}</strong>
+            <span>Products available</span>
+        </div>
+
+    </div>
+
+
+    <!-- Search Bar -->
+    <div class="market-search-area">
+
+        <form class="market-search" method="get" action="{{ url_for('index') }}">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+                type="search"
+                name="q"
+                value="{{ term }}"
+                placeholder="Search for tomatoes, apples, potatoes..."
+                aria-label="Search products"
+            >
+
+            <button type="submit">
+                Search Products
+            </button>
+
+        </form>
+
+        {% if term %}
+            <a class="clear-search" href="{{ url_for('index') }}">
+                Clear search ×
+            </a>
+        {% endif %}
+
+    </div>
+
+
+    <!-- Product Grid -->
+    {% if products %}
+
+        <div class="modern-product-grid">
+
+            {% for p in products %}
+
+                <article class="modern-product-card">
+
+                    <!-- Product Image -->
+                    <div class="modern-product-image">
+
+                        {% if p.product_image %}
+
+                            <img
+                                src="{{ p.product_image }}"
+                                alt="{{ p.product_name }}"
+                                loading="lazy"
+                            >
+
+                        {% else %}
+
+                            <div class="product-placeholder">
+                                {{ '🥬' if p.category|lower == 'vegetables' else '🍎' }}
+                            </div>
+
+                        {% endif %}
+
+                        <span class="fresh-badge">
+                            Fresh Produce
+                        </span>
+
+                    </div>
+
+
+                    <!-- Product Details -->
+                    <div class="modern-product-info">
+
+                        <div class="product-category-row">
+                            <span class="modern-category">
+                                {{ p.category }}
+                            </span>
+
+                            <span class="available-indicator">
+                                <span></span> In Stock
+                            </span>
+                        </div>
+
+
+                        <h3>{{ p.product_name }}</h3>
+
+
+                        <p class="farmer-name">
+                            <span>👨‍🌾</span>
+                            Sold by {{ p.farmer_name }}
+                        </p>
+
+
+                        {% if p.description %}
+                            <p class="product-description">
+                                {{ p.description }}
+                            </p>
+                        {% endif %}
+
+
+                        <div class="modern-product-bottom">
+
+                            <div class="modern-price">
+                                <strong>
+                                    ₹{{ '%.2f'|format(p.price) }}
+                                </strong>
+                                <small>/ unit</small>
+                            </div>
+
+                            <span class="stock-label">
+                                {{ p.quantity }} available
+                            </span>
+
+                        </div>
+
+
+                        <!-- Product Actions -->
+                        <div class="modern-product-actions">
+
+                            <a
+                                class="review-link"
+                                href="{{ url_for('reviews', pid=p.product_id) }}"
+                            >
+                                ☆ Reviews
+                            </a>
+
+
+                            {% if role == 'customer' %}
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for('add_cart', pid=p.product_id) }}"
+                                >
+                                    <button type="submit" class="add-cart-btn">
+                                        Add to Cart <span>+</span>
+                                    </button>
+                                </form>
+
+                            {% elif not current_user %}
+
+                                <a
+                                    class="add-cart-btn login-order-btn"
+                                    href="{{ url_for('login') }}"
+                                >
+                                    Login to Order →
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- Empty Search Result -->
+        <div class="market-empty-state">
+
+            <div class="empty-icon">🧺</div>
+
+            {% if term %}
+
+                <h3>No matching products found</h3>
+
+                <p>
+                    We couldn't find products matching
+                    <strong>{{ term }}</strong>.
+                    Try searching with another product name.
+                </p>
+
+                <a href="{{ url_for('index') }}" class="empty-action">
+                    View All Products →
+                </a>
+
+            {% else %}
+
+                <h3>No products available right now</h3>
+
+                <p>
+                    Farmers haven't listed any products yet.
+                    Please check again soon.
+                </p>
+
+                {% if role == 'farmer' %}
+                    <a href="{{ url_for('add_product') }}" class="empty-action">
+                        List Your First Product →
+                    </a>
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ================= FARM2HOME PROMOTION ================= -->
+<section class="farmer-promotion">
+
+    <div class="promotion-icon">
+        🌱
+    </div>
+
+    <div class="promotion-content">
+        <span>GROW WITH FARM2HOME</span>
+
+        <h2>Are you a farmer?</h2>
+
+        <p>
+            Bring your farm products online.
+            Connect directly with customers and grow your business
+            through Farm2Home.
+        </p>
+    </div>
+
+    <div class="promotion-action">
+
+        {% if role == 'farmer' %}
+
+            <a href="{{ url_for('add_product') }}">
+                Add Your Products →
+
+            </a>
+
+        {% elif not current_user %}
+
+            <a href="{{ url_for('register') }}">
+                Join Farm2Home →
+
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('dashboard') }}">
+                Visit Dashboard →
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

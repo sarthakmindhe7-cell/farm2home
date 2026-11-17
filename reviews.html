@@ -1,0 +1,153 @@
+
+{% extends "base.html" %}
+
+{% block title %}Product Reviews | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <!-- Review Header -->
+    <div class="dashboard-heading">
+        <div>
+            <span class="section-label">CUSTOMER FEEDBACK</span>
+            <h1>{{ product.product_name }} Reviews</h1>
+            <p>See what customers think about this farm product.</p>
+        </div>
+
+        <div class="dashboard-icon">⭐</div>
+    </div>
+
+
+    <!-- Write Review -->
+    {% if role == 'customer' %}
+
+    <section class="checkout panel">
+
+        <span class="section-label">SHARE YOUR EXPERIENCE</span>
+
+        <h2>Write a Review</h2>
+
+        <p class="auth-subtitle">
+            Your feedback helps other customers make better decisions.
+        </p>
+
+        <form class="form" method="post">
+
+            <label for="review-rating">
+                Your Rating
+            </label>
+
+            <select id="review-rating" name="rating" required>
+                {% for n in range(5, 0, -1) %}
+                <option value="{{ n }}">
+                    {{ n }} / 5 Stars
+                </option>
+                {% endfor %}
+            </select>
+
+            <label for="review-comment">
+                Your Comment
+            </label>
+
+            <textarea
+                id="review-comment"
+                name="comment"
+                rows="4"
+                placeholder="Share your experience with this product..."
+                maxlength="1000"
+            ></textarea>
+
+            <button type="submit" class="auth-submit-btn">
+                Submit Review <span>→</span>
+            </button>
+
+        </form>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- Customer Reviews -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="section-label">CUSTOMER OPINIONS</span>
+                <h2>Customer Reviews</h2>
+            </div>
+
+            <span class="section-count">
+                {{ reviews|length }} Reviews
+            </span>
+        </div>
+
+
+        <div class="reviews-list">
+
+            {% for r in reviews %}
+
+            <article class="review panel">
+
+                <div class="review-header">
+
+                    <div class="review-user">
+                        <div class="review-avatar">👤</div>
+
+                        <div>
+                            <strong>{{ r.customer_name }}</strong>
+                            <p class="muted">
+                                Verified customer feedback
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="stars" aria-label="{{ r.rating }} out of 5 stars">
+                        {{ '★' * r.rating }}{{ '☆' * (5-r.rating) }}
+                    </div>
+
+                </div>
+
+                <div class="review-content">
+                    <p>
+                        {{ r.comment or 'No written comment provided.' }}
+                    </p>
+                </div>
+
+                <small class="muted">
+                    Reviewed on: {{ r.review_date }}
+                </small>
+
+            </article>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <div class="empty-cart-icon">⭐</div>
+
+                <h2>No Reviews Yet</h2>
+
+                <p>
+                    Be the first customer to share feedback
+                    about this product.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <div class="cart-continue">
+        <a href="{{ url_for('index') }}">
+            ← Back to Marketplace
+        </a>
+    </div>
+
+</section>
+
+{% endblock %}

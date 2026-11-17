@@ -1,0 +1,125 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login | Farm2Home{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-visual">
+
+        <div class="auth-visual-content">
+            <span class="auth-label">WELCOME TO FARM2HOME</span>
+
+            <h1>
+                Fresh food.
+                <span>Better connections.</span>
+            </h1>
+
+            <p>
+                Connect with local farmers, discover fresh produce
+                and enjoy a smarter way to shop.
+            </p>
+
+            <div class="auth-benefits">
+                <div><span>🌱</span> Fresh from local farms</div>
+                <div><span>🤝</span> Direct farmer connection</div>
+                <div><span>🛒</span> Easy online shopping</div>
+            </div>
+        </div>
+
+        <div class="auth-decoration">🥬 🍅 🥕</div>
+
+    </div>
+
+
+    <div class="auth-form-area">
+
+        <div class="auth-card">
+
+            <div class="auth-card-icon">🌿</div>
+
+            <span class="section-label">WELCOME BACK</span>
+
+            <h2>Login to your account</h2>
+
+            <p class="auth-subtitle">
+                Enter your details to continue to Farm2Home.
+            </p>
+
+
+            <form class="auth-form" method="post">
+
+                <label for="login-email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="login-email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+
+
+                <label for="login-password">
+                    Password
+                </label>
+
+                <div class="password-field">
+
+                    <input
+                        type="password"
+                        id="login-password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-password-toggle="login-password"
+                        aria-label="Show password"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+
+                <button type="submit" class="auth-submit-btn">
+                    Login to Farm2Home <span>→</span>
+                </button>
+
+            </form>
+
+
+            <div class="auth-divider">
+                <span>NEW TO FARM2HOME?</span>
+            </div>
+
+
+            <a
+                href="{{ url_for('register') }}"
+                class="auth-register-btn"
+            >
+                Create New Account
+            </a>
+
+
+            <p class="auth-security">
+                🔒 Your account information is protected.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {{ 'Edit' if product else 'Add' }} Product | Farm2Home
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <!-- Left Information Panel -->
+    <div class="auth-visual">
+
+        <div class="auth-visual-content">
+
+            <span class="auth-label">FARMER PANEL</span>
+
+            <h1>
+                Share your harvest.
+                <span>Reach more customers.</span>
+            </h1>
+
+            <p>
+                Add your fresh farm products to Farm2Home
+                and connect directly with customers.
+            </p>
+
+            <div class="auth-benefits">
+                <div><span>🍎</span> List fresh farm products</div>
+                <div><span>💰</span> Set your own product price</div>
+                <div><span>🤝</span> Connect with customers</div>
+            </div>
+
+        </div>
+
+        <div class="auth-decoration">🌾 🥬 🍅</div>
+
+    </div>
+
+
+    <!-- Product Form -->
+    <div class="auth-form-area">
+
+        <div class="auth-card">
+
+            <div class="auth-card-icon">🌱</div>
+
+            <span class="section-label">
+                {{ 'UPDATE PRODUCT' if product else 'NEW PRODUCT' }}
+            </span>
+
+            <h2>
+                {{ 'Edit Product' if product else 'Add a Product' }}
+            </h2>
+
+            <p class="auth-subtitle">
+                Enter accurate product details below.
+            </p>
+
+            <form class="auth-form" method="post">
+
+                <label for="product-name">Product Name</label>
+                <input
+                    type="text"
+                    id="product-name"
+                    name="product_name"
+                    value="{{ product.product_name if product else '' }}"
+                    placeholder="Example: Fresh Tomatoes"
+                    maxlength="100"
+                    required
+                >
+
+                <label for="product-description">Description</label>
+                <textarea
+                    id="product-description"
+                    name="description"
+                    rows="3"
+                    placeholder="Describe your product..."
+                >{{ product.description if product else '' }}</textarea>
+
+                <label for="product-category">Category</label>
+                <select id="product-category" name="category" required>
+                    <option value="Fruits"
+                        {% if product and product.category == 'Fruits' %}selected{% endif %}>
+                        Fruits
+                    </option>
+
+                    <option value="Vegetables"
+                        {% if product and product.category == 'Vegetables' %}selected{% endif %}>
+                        Vegetables
+                    </option>
+                </select>
+
+                <label for="product-price">Price (₹)</label>
+                <input
+                    type="number"
+                    id="product-price"
+                    name="price"
+                    min="0.01"
+                    step="0.01"
+                    value="{{ product.price if product else '' }}"
+                    placeholder="Enter price"
+                    required
+                >
+
+                <label for="product-quantity">Available Quantity</label>
+                <input
+                    type="number"
+                    id="product-quantity"
+                    name="quantity"
+                    min="0"
+                    step="1"
+                    value="{{ product.quantity if product else '1' }}"
+                    placeholder="Enter quantity"
+                    required
+                >
+
+                <label for="product-image">Product Image URL (Optional)</label>
+                <input
+                    type="url"
+                    id="product-image"
+                    name="product_image"
+                    value="{{ product.product_image if product else '' }}"
+                    placeholder="https://example.com/image.jpg"
+                >
+
+                <button type="submit" class="auth-submit-btn">
+                    {{ 'Update Product' if product else 'Save Product' }}
+                    <span>→</span>
+                </button>
+
+                <a href="{{ url_for('dashboard') }}" class="auth-register-btn">
+                    Back to Dashboard
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
